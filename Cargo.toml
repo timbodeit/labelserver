@@ -1,5 +1,5 @@
 [package]
-name = "mqtt_labelmaker"
+name = "labelserver"
 version = "0.1.0"
 authors = ["Tim Bodeit <tim@bodeit.com>"]
 edition = "2018"
