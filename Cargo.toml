@@ -23,3 +23,6 @@ hyper = { version = "0.14", features = ["full"] }
 tokio = { version = "1", features = ["full"] }
 routerify = { git = "https://github.com/seanpianka/routerify.git" }
 regex = "1"
+
+[profile.release]
+debug = true
