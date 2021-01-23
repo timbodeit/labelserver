@@ -17,7 +17,8 @@ jobs:
       - name: Run tests
         run: cargo test --verbose
 
-  package:
+  package_x64:
+    name: Compile Linux x64 binary
     runs-on: ubuntu-latest
     needs: [test]
     steps:
@@ -27,5 +28,35 @@ jobs:
       - name: Upload x64
         uses: actions/upload-artifact@master
         with:
-          name: labelserver linux x64
+          name: labelserver linux x86_64
           path: target/release/labelserver
+
+  package_arm:
+    name: Compile Linux armhf binaries
+    runs-on: ubuntu-20.04
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install arm toolchain
+        run: |
+          sudo apt-get install gcc-10-multilib-arm-linux-gnueabihf
+          rustup target add arm-unknown-linux-gnueabihf
+          echo '[target.arm-unknown-linux-gnueabihf]' >> ~/.cargo/config
+          echo 'linker = "arm-linux-gnueabihf-gcc-10"' >> ~/.cargo/config
+          rustup target add armv7-unknown-linux-gnueabihf
+          echo '[target.armv7-unknown-linux-gnueabihf]' >> ~/.cargo/config
+          echo 'linker = "arm-linux-gnueabihf-gcc-10"' >> ~/.cargo/config
+      - name: Build armhf
+        run: cargo build --target=arm-unknown-linux-gnueabihf --release --verbose
+      - name: Upload armhf
+        uses: actions/upload-artifact@master
+        with:
+          name: labelserver linux armhf
+          path: target/arm-unknown-linux-gnueabihf/release/labelserver
+      - name: Build armv7hf
+        run: cargo build --target=armv7-unknown-linux-gnueabihf --release --verbose
+      - name: Upload armv7hf
+        uses: actions/upload-artifact@master
+        with:
+          name: labelserver linux armv7hf
+          path: target/armv7-unknown-linux-gnueabihf/release/labelserver
